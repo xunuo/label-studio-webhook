@@ -14,6 +14,10 @@ def process_payload(payload: dict):
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
+    # 1. 读取 Referer
+    referer = request.headers.get("Referer")
+    logger.info("▶ Request Referer: %s", referer)
+    
     payload = request.get_json(force=True)
     if not payload:
         return jsonify({"error": "Invalid JSON"}), 400
