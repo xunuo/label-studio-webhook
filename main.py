@@ -12,12 +12,17 @@ def process_payload(payload: dict):
     # 你的业务逻辑……
     return {"status": "processed", "size": len(payload)}
 
+@app.route("/referer", methods=["GET"])
+def show_referer():
+    # 从请求头里读取 Referer
+    referer = request.headers.get("Referer")
+    # 打印到日志
+    logger.info("▶ GET /referer called, Referer: %s", referer)
+    # 返回给客户端，也可以只返回空 204
+    return jsonify({"referer": referer}), 200
+    
 @app.route("/webhook", methods=["POST"])
 def webhook():
-    # 1. 读取 Referer
-    referer = request.headers.get("Referer")
-    logger.info("▶ Request Referer: %s", referer)
-    
     payload = request.get_json(force=True)
     if not payload:
         return jsonify({"error": "Invalid JSON"}), 400
